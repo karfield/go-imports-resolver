@@ -7,7 +7,7 @@ import (
 )
 
 func (app *ResolverApp) syncPack(packname string, users []string) {
-	fmt.Printf("Sync package: %s (used by %+v)", packname, users)
+	fmt.Printf("Sync package: %s (used by %+v)\n", packname, users)
 	cmd := exec.Command("go", "get", packname)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
