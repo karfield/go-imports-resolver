@@ -16,31 +16,28 @@ func (app *ResolverApp) resolve() {
 		app.scanImports(srcfile)
 	}
 
-	for packname, _ := range app.resolveMap {
-		if app.check(packname) {
-			app.resolveMap[packname] = true
-		}
+	for packname, users := range app.resolveMap {
+		app.syncPack(packname, users)
 	}
-
-	for packname, resolved := range app.resolveMap {
-		if !resolved {
-			app.syncPack(packname)
-		}
-	}
-}
-
-func (app *ResolverApp) check(packname string) bool {
-	if app.checkInPath(packname, app.goRoot) {
-		return true
-	}
-	for _, gopath := range app.goPaths {
-		if app.checkInPath(packname, gopath) {
-			return true
-		}
-	}
-	return false
 }
 
 func (app *ResolverApp) checkInPath(packname, _path string) bool {
 	return dry.FileIsDir(path.Join(_path, "src", packname))
+}
+
+func (app *ResolverApp) check(packname string) bool {
+	if app.resolved[packname] {
+		return true
+	}
+	if app.checkInPath(packname, app.goRoot) {
+		app.resolved[packname] = true
+		return true
+	}
+	for _, gopath := range app.goPaths {
+		if app.checkInPath(packname, gopath) {
+			app.resolved[packname] = true
+			return true
+		}
+	}
+	return false
 }

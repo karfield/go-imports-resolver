@@ -37,7 +37,10 @@ func (app *ResolverApp) scanImports(srcfile string) bool {
 		if err != nil {
 			continue
 		}
-		app.resolveMap[name] = false
+		if app.check(name) {
+			continue
+		}
+		app.addSrcfileByImport(name, srcfile)
 	}
 
 	return true
