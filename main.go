@@ -14,6 +14,7 @@ func newResolver() *ResolverApp {
 	app := new(ResolverApp)
 	app.cli = cli.NewApp()
 	app.resolveMap = make(map[string][]string)
+	app.resolved = make(map[string]bool)
 	app.goPaths = []string{}
 	return app
 }
